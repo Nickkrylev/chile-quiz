@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuestionario sobre Chile</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.85), transparent 35%),
+                linear-gradient(135deg, #0039a6 0%, #ffffff 48%, #d52b1e 100%);
+            color: #172033;
+            overflow-x: hidden;
+        }
+
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.18;
+            filter: blur(1px);
+            animation: floatShape 8s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        .shape-1 {
+            width: 220px;
+            height: 220px;
+            background: #0039a6;
+            left: -70px;
+            top: 80px;
+        }
+
+        .shape-2 {
+            width: 280px;
+            height: 280px;
+            background: #d52b1e;
+            right: -90px;
+            bottom: 70px;
+            animation-delay: 1s;
+        }
+
+        .shape-3 {
+            width: 140px;
+            height: 140px;
+            background: #ffffff;
+            right: 18%;
+            top: 12%;
+            animation-delay: 2s;
+        }
+
+        @keyframes floatShape {
+            from {
+                transform: translateY(0) scale(1);
+            }
+            to {
+                transform: translateY(-28px) scale(1.08);
+            }
+        }
+
+        .app {
+            width: min(1120px, 94%);
+            margin: 0 auto;
+            padding: 36px 0;
+        }
+
+        .hero,
+        .quiz-card,
+        .result-card {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 28px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(16px);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 32px;
+            align-items: center;
+            padding: 42px;
+            animation: appear 0.7s ease both;
+        }
+
+        .badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 14px;
+            margin-bottom: 18px;
+            border-radius: 999px;
+            background: rgba(0, 57, 166, 0.1);
+            color: #0039a6;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: clamp(34px, 5vw, 62px);
+            line-height: 1.05;
+            margin-bottom: 18px;
+            color: #0d1b3e;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.65;
+            color: #43506a;
+            margin-bottom: 24px;
+        }
+
+        .name-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            border: 2px solid #dfe6f3;
+            border-radius: 16px;
+            padding: 15px 16px;
+            font-size: 16px;
+            outline: none;
+            background: #ffffff;
+            transition: 0.25s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #0039a6;
+            box-shadow: 0 0 0 4px rgba(0, 57, 166, 0.12);
+        }
+
+        .name-form input {
+            flex: 1 1 260px;
+        }
+
+        button {
+            border: none;
+            border-radius: 16px;
+            padding: 15px 22px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #0039a6, #0b5fff);
+            color: #ffffff;
+            box-shadow: 0 14px 28px rgba(0, 57, 166, 0.25);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(0, 57, 166, 0.34);
+        }
+
+        .secondary-btn {
+            background: #f1f4fb;
+            color: #172033;
+        }
+
+        .secondary-btn:hover {
+            background: #e4eaf6;
+        }
+
+        .hero-visual {
+            position: relative;
+            min-height: 360px;
+            display: grid;
+            place-items: center;
+        }
+
+        .flag-card {
+            width: min(370px, 100%);
+            overflow: hidden;
+            border-radius: 28px;
+            background: #ffffff;
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.2);
+            transform: rotate(2deg);
+            animation: cardFloat 3.2s ease-in-out infinite alternate;
+        }
+
+        .flag-top {
+            display: grid;
+            grid-template-columns: 38% 62%;
+            height: 115px;
+        }
+
+        .flag-blue {
+            background: #0039a6;
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            font-size: 48px;
+        }
+
+        .flag-white {
+            background: #ffffff;
+        }
+
+        .flag-red {
+            height: 115px;
+            background: #d52b1e;
+        }
+
+        .visual-tags {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .tag {
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 13px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            font-weight: 800;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+            animation: tagMove 3s ease-in-out infinite alternate;
+        }
+
+        .tag:nth-child(1) {
+            left: 0;
+            top: 42px;
+        }
+
+        .tag:nth-child(2) {
+            right: 0;
+            top: 26px;
+            animation-delay: 0.5s;
+        }
+
+        .tag:nth-child(3) {
+            left: 20px;
+            bottom: 38px;
+            animation-delay: 1s;
+        }
+
+        .tag:nth-child(4) {
+            right: 20px;
+            bottom: 55px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes cardFloat {
+            from {
+                transform: rotate(2deg) translateY(0);
+            }
+            to {
+                transform: rotate(-1deg) translateY(-14px);
+            }
+        }
+
+        @keyframes tagMove {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 18px;
+            color: #ffffff;
+            animation: appear 0.5s ease both;
+        }
+
+        .player {
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .score-pill {
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            font-weight: 800;
+        }
+
+        .progress-wrap {
+            width: 100%;
+            height: 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.4);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #0039a6, #ffffff, #d52b1e);
+            transition: width 0.35s ease;
+        }
+
+        .quiz-card {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 28px;
+            padding: 30px;
+            animation: slideIn 0.35s ease both;
+        }
+
+        .illustration {
+            min-height: 360px;
+            border-radius: 24px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.8)),
+                linear-gradient(135deg, #dce8ff, #fff4f2);
+            display: grid;
+            place-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration::before,
+        .illustration::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 57, 166, 0.12);
+        }
+
+        .illustration::before {
+            width: 260px;
+            height: 260px;
+            left: -80px;
+            bottom: -70px;
+        }
+
+        .illustration::after {
+            width: 200px;
+            height: 200px;
+            right: -55px;
+            top: -55px;
+            background: rgba(213, 43, 30, 0.14);
+        }
+
+        .big-icon {
+            position: relative;
+            z-index: 1;
+            font-size: 118px;
+            filter: drop-shadow(0 20px 24px rgba(0, 0, 0, 0.16));
+            animation: iconPulse 2.8s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                transform: scale(1) rotate(-2deg);
+            }
+            50% {
+                transform: scale(1.08) rotate(2deg);
+            }
+        }
+
+        .question-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 22px;
+        }
+
+        .question-number {
+            color: #0039a6;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .question-title {
+            font-size: clamp(24px, 3vw, 34px);
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .question-type {
+            color: #66738d;
+            font-size: 15px;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 16px;
+            border: 2px solid #e1e7f2;
+            border-radius: 18px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 700;
+        }
+
+        .option:hover {
+            transform: translateX(4px);
+            border-color: rgba(0, 57, 166, 0.5);
+        }
+
+        .option.selected {
+            background: rgba(0, 57, 166, 0.08);
+            border-color: #0039a6;
+        }
+
+        .option .letter {
+            min-width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #eef3ff;
+            color: #0039a6;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            margin-top: 22px;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .message {
+            min-height: 24px;
+            color: #d52b1e;
+            font-weight: 700;
+        }
+
+        .result-card {
+            padding: 44px;
+            text-align: center;
+            animation: appear 0.7s ease both;
+        }
+
+        .result-icon {
+            font-size: 86px;
+            margin-bottom: 18px;
+            animation: iconPulse 2.3s ease-in-out infinite;
+        }
+
+        .result-card h2 {
+            font-size: clamp(30px, 4vw, 52px);
+            margin-bottom: 14px;
+        }
+
+        .final-score {
+            display: inline-block;
+            margin: 18px 0;
+            padding: 14px 24px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #0039a6, #d52b1e);
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .result-text {
+            max-width: 720px;
+            margin: 0 auto 26px;
+            color: #43506a;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .answers-review {
+            margin-top: 28px;
+            text-align: left;
+            display: grid;
+            gap: 12px;
+        }
+
+        .review-item {
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #f5f7fc;
+            border-left: 6px solid #0039a6;
+        }
+
+        .review-item.wrong {
+            border-left-color: #d52b1e;
+        }
+
+        .review-title {
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .review-answer {
+            color: #526078;
+            font-size: 14px;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(16px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @media (max-width: 850px) {
+            .hero,
+            .quiz-card {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 28px;
+            }
+
+            .hero-visual {
+                min-height: 280px;
+            }
+
+            .illustration {
+                min-height: 230px;
+            }
+
+            .big-icon {
+                font-size: 88px;
+            }
+        }
+
+        body {
+            background: #eef4f7;
+        }
+
+        .app {
+            width: min(1160px, 94%);
+            padding: 28px 0 44px;
+        }
+
+        .quiz-card,
+        .result-card {
+            border-radius: 8px;
+        }
+
+        .hero {
+            min-height: min(760px, calc(100vh - 56px));
+            align-content: space-between;
+            grid-template-columns: 1fr;
+            gap: 26px;
+            padding: clamp(28px, 5vw, 62px);
+            border-radius: 8px;
+            overflow: hidden;
+            color: #ffffff;
+            background:
+                linear-gradient(90deg, rgba(4, 18, 40, 0.94) 0%, rgba(4, 18, 40, 0.68) 46%, rgba(4, 18, 40, 0.32) 100%),
+                url("assets/chile-panorama.jpg") center / cover;
+            box-shadow: 0 28px 70px rgba(11, 30, 47, 0.3);
+        }
+
+        .hero-copy {
+            max-width: 650px;
+        }
+
+        .badge {
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: clamp(38px, 7vw, 82px);
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .name-form input {
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .photo-rail {
+            width: min(860px, 100%);
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .photo-tile {
+            position: relative;
+            min-height: 142px;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+        }
+
+        .photo-tile img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 1.8s ease;
+        }
+
+        .photo-tile:hover img {
+            transform: scale(1.05);
+        }
+
+        .photo-tile span {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            left: 10px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            background: rgba(4, 18, 40, 0.74);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .topbar {
+            color: #172033;
+        }
+
+        .score-pill,
+        .progress-wrap {
+            border-radius: 4px;
+        }
+
+        .score-pill {
+            background: rgba(0, 57, 166, 0.1);
+            border-color: rgba(0, 57, 166, 0.16);
+        }
+
+        .progress-wrap {
+            background: rgba(0, 57, 166, 0.14);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #0039a6 0%, #007f92 52%, #d52b1e 100%);
+        }
+
+        .illustration {
+            display: block;
+            min-height: 360px;
+            border-radius: 8px;
+            background: #dce8ff;
+        }
+
+        .illustration::before {
+            display: none;
+        }
+
+        .illustration::after {
+            inset: 0;
+            width: auto;
+            height: auto;
+            border-radius: 0;
+            background: linear-gradient(180deg, transparent 38%, rgba(4, 18, 40, 0.82));
+        }
+
+        .illustration img {
+            width: 100%;
+            height: 100%;
+            min-height: inherit;
+            display: block;
+            object-fit: cover;
+            animation: slowZoom 9s ease-in-out infinite alternate;
+        }
+
+        .scene-label {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            left: 14px;
+            z-index: 1;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .big-icon {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.92);
+            font-size: 34px;
+            filter: none;
+            box-shadow: 0 16px 28px rgba(0, 0, 0, 0.22);
+        }
+
+        @keyframes slowZoom {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.07);
+            }
+        }
+
+        @media (max-width: 850px) {
+            .hero {
+                min-height: auto;
+            }
+
+            .photo-rail {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-tile {
+                min-height: 118px;
+            }
+
+            .illustration {
+                min-height: 230px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app">
+        <section id="startScreen" class="hero">
+            <div class="hero-copy">
+                <div class="badge">⭐ Cuestionario interactivo</div>
+                <h1>Chile</h1>
+                <p>
+                    Escribe tu nombre y responde 20 preguntas en forma de tarjetas.
+                    Al final verás tu puntuación y un pequeño resumen de tus respuestas.
+                </p>
+                <form class="name-form" id="nameForm">
+                    <input id="playerName" type="text" placeholder="Escribe tu nombre..." maxlength="35" />
+                    <button class="primary-btn" type="submit">Empezar</button>
+                </form>
+            </div>
+
+            <div class="photo-rail" aria-hidden="true">
+                <div class="photo-tile">
+                    <img src="assets/atacama-observatory.jpg" alt="" />
+                    <span>Atacama</span>
+                </div>
+                <div class="photo-tile">
+                    <img src="assets/rapa-nui.jpg" alt="" />
+                    <span>Rapa Nui</span>
+                </div>
+                <div class="photo-tile">
+                    <img src="assets/torres-del-paine.jpg" alt="" />
+                    <span>Torres del Paine</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="quizScreen" class="hidden">
+            <div class="topbar">
+                <div class="player" id="playerLabel">Jugador</div>
+                <div class="score-pill" id="questionLabel">Pregunta 1 / 20</div>
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <article class="quiz-card" id="quizCard"></article>
+        </section>
+
+        <section id="resultScreen" class="result-card hidden">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <h2 id="resultTitle">Resultado</h2>
+            <div class="final-score" id="finalScore">0 / 20</div>
+            <p class="result-text" id="resultText"></p>
+            <button class="primary-btn" id="restartBtn">Intentar otra vez</button>
+            <div class="answers-review" id="answersReview"></div>
+        </section>
+    </main>
+
+    <script>
+        const scenes = {
+            panorama: {
+                src: "assets/chile-panorama.jpg",
+                alt: "Paisajes de Chile con desierto, costa y montañas.",
+                label: "Chile: Andes, costa y desierto"
+            },
+            atacama: {
+                src: "assets/atacama-observatory.jpg",
+                alt: "Observatorio astronómico en el desierto de Atacama.",
+                label: "Atacama y sus cielos"
+            },
+            rapaNui: {
+                src: "assets/rapa-nui.jpg",
+                alt: "Moáis junto a la costa de Rapa Nui.",
+                label: "Rapa Nui"
+            },
+            patagonia: {
+                src: "assets/torres-del-paine.jpg",
+                alt: "Montañas y lago en Torres del Paine.",
+                label: "Patagonia chilena"
+            }
+        };
+
+        const questions = [
+            {
+                type: "single",
+                icon: "🏙️",
+                question: "¿Cuál es la capital de Chile?",
+                options: ["Valparaíso", "Santiago de Chile", "Lima", "Buenos Aires"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "🌎",
+                question: "¿En qué continente se encuentra Chile?",
+                options: ["Europa", "Asia", "América del Sur", "América del Norte"],
+                correct: [2]
+            },
+            {
+                type: "single",
+                icon: "🌊",
+                question: "¿Con qué océano tiene costa Chile?",
+                options: ["Océano Atlántico", "Océano Índico", "Océano Pacífico", "Océano Ártico"],
+                correct: [2]
+            },
+            {
+                type: "multiple",
+                icon: "🧭",
+                question: "¿Con qué países limita Chile?",
+                options: ["Perú", "Bolivia", "Argentina", "España"],
+                correct: [0, 1, 2]
+            },
+            {
+                type: "single",
+                icon: "🇨🇱",
+                question: "¿Cuáles son los colores de la bandera de Chile?",
+                options: ["Verde, blanco y rojo", "Azul, blanco y rojo", "Amarillo, azul y rojo", "Negro, rojo y amarillo"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "⭐",
+                question: "¿Qué simboliza la estrella en la bandera de Chile?",
+                options: ["La riqueza del país", "La unidad del país", "El océano Pacífico", "Los Andes"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "🦅",
+                question: "¿Qué animales aparecen en el escudo nacional de Chile?",
+                options: ["El cóndor y el huemul", "El jaguar y el puma", "El caballo y el águila", "El pingüino y la ballena"],
+                correct: [0]
+            },
+            {
+                type: "single",
+                icon: "🏜️",
+                question: "¿Qué desierto se encuentra en el norte de Chile?",
+                options: ["Sahara", "Gobi", "Atacama", "Kalahari"],
+                correct: [2]
+            },
+            {
+                type: "multiple",
+                icon: "🔭",
+                question: "¿Por qué el desierto de Atacama es famoso?",
+                options: ["Es uno de los lugares más secos del mundo", "Es ideal para observar las estrellas", "Tiene muchos observatorios astronómicos", "Está en Europa"],
+                correct: [0, 1, 2]
+            },
+            {
+                type: "single",
+                icon: "🗿",
+                question: "¿Cómo también se llama la Isla de Pascua?",
+                options: ["Rapa Nui", "Tierra del Fuego", "Valparaíso", "Patagonia"],
+                correct: [0]
+            },
+            {
+                type: "single",
+                icon: "🗿",
+                question: "¿Cómo se llaman las famosas estatuas de la Isla de Pascua?",
+                options: ["Pirámides", "Moáis", "Torres", "Templos"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "🥟",
+                question: "¿Cuál es una comida típica de Chile?",
+                options: ["Sushi", "Empanada", "Paella", "Pizza"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "⛏️",
+                question: "¿Qué recurso natural es muy importante para la economía chilena?",
+                options: ["Cobre", "Oro", "Petróleo", "Diamantes"],
+                correct: [0]
+            },
+            {
+                type: "single",
+                icon: "⚽",
+                question: "¿Qué deporte es el más popular en Chile?",
+                options: ["Baloncesto", "Fútbol", "Hockey", "Béisbol"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "🏆",
+                question: "¿En qué años ganó Chile la Copa América?",
+                options: ["2010 y 2012", "2015 y 2016", "2018 y 2019", "2000 y 2001"],
+                correct: [1]
+            },
+            {
+                type: "single",
+                icon: "🏔️",
+                question: "¿Qué parque nacional famoso está en la Patagonia chilena?",
+                options: ["Torres del Paine", "Yellowstone", "Machu Picchu", "Iguazú"],
+                correct: [0]
+            },
+            {
+                type: "single",
+                icon: "📚",
+                question: "¿Qué escritor chileno ganó el Premio Nobel de Literatura?",
+                options: ["Pablo Neruda", "Gabriel García Márquez", "Miguel de Cervantes", "Jorge Luis Borges"],
+                correct: [0]
+            },
+            {
+                type: "single",
+                icon: "🌋",
+                question: "¿Qué problema natural ocurre con frecuencia en Chile?",
+                options: ["Terremotos", "Huracanes", "Tornados de nieve", "Erupciones polares"],
+                correct: [0]
+            },
+            {
+                type: "short",
+                icon: "💡",
+                question: "Escribe un dato interesante sobre Chile.",
+                placeholder: "Ejemplo: El desierto de Atacama es uno de los lugares más secos del mundo."
+            },
+            {
+                type: "long",
+                icon: "✈️",
+                question: "¿Te gustaría visitar Chile? ¿Por qué?",
+                placeholder: "Escribe tu respuesta completa..."
+            }
+        ];
+
+        const startScreen = document.getElementById("startScreen");
+        const quizScreen = document.getElementById("quizScreen");
+        const resultScreen = document.getElementById("resultScreen");
+        const nameForm = document.getElementById("nameForm");
+        const playerNameInput = document.getElementById("playerName");
+        const playerLabel = document.getElementById("playerLabel");
+        const questionLabel = document.getElementById("questionLabel");
+        const progressBar = document.getElementById("progressBar");
+        const quizCard = document.getElementById("quizCard");
+        const finalScore = document.getElementById("finalScore");
+        const resultTitle = document.getElementById("resultTitle");
+        const resultText = document.getElementById("resultText");
+        const resultIcon = document.getElementById("resultIcon");
+        const restartBtn = document.getElementById("restartBtn");
+        const answersReview = document.getElementById("answersReview");
+
+        let playerName = "";
+        let currentIndex = 0;
+        let answers = Array(questions.length).fill(null);
+
+        nameForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const name = playerNameInput.value.trim();
+
+            if (!name) {
+                playerNameInput.focus();
+                playerNameInput.style.borderColor = "#d52b1e";
+                return;
+            }
+
+            playerName = name;
+            playerLabel.textContent = `Jugador: ${playerName}`;
+            startScreen.classList.add("hidden");
+            quizScreen.classList.remove("hidden");
+            renderQuestion();
+        });
+
+        restartBtn.addEventListener("click", () => {
+            currentIndex = 0;
+            answers = Array(questions.length).fill(null);
+            resultScreen.classList.add("hidden");
+            startScreen.classList.remove("hidden");
+            playerNameInput.value = "";
+            playerNameInput.focus();
+        });
+
+        function renderQuestion() {
+            const item = questions[currentIndex];
+            const selected = answers[currentIndex];
+            const progress = ((currentIndex + 1) / questions.length) * 100;
+
+            questionLabel.textContent = `Pregunta ${currentIndex + 1} / ${questions.length}`;
+            progressBar.style.width = `${progress}%`;
+
+            const typeText = getTypeText(item.type);
+            const answerHtml = getAnswerHtml(item, selected);
+            const scene = getQuestionScene(currentIndex);
+
+            quizCard.innerHTML = `
+                <div class="illustration">
+                    <img src="${scene.src}" alt="${scene.alt}">
+                    <div class="big-icon" aria-hidden="true">${item.icon}</div>
+                    <div class="scene-label">${scene.label}</div>
+                </div>
+                <div class="question-side">
+                    <div>
+                        <div class="question-number">Pregunta ${currentIndex + 1}</div>
+                        <h2 class="question-title">${item.question}</h2>
+                        <p class="question-type">${typeText}</p>
+                        ${answerHtml}
+                    </div>
+                    <div>
+                        <div class="message" id="message"></div>
+                        <div class="actions">
+                            <button class="secondary-btn" id="prevBtn">Atrás</button>
+                            <button class="primary-btn" id="nextBtn">${currentIndex === questions.length - 1 ? "Finalizar" : "Siguiente"}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            quizCard.style.animation = "none";
+            quizCard.offsetHeight;
+            quizCard.style.animation = "slideIn 0.35s ease both";
+
+            document.getElementById("prevBtn").disabled = currentIndex === 0;
+            document.getElementById("prevBtn").style.opacity = currentIndex === 0 ? "0.45" : "1";
+            document.getElementById("prevBtn").addEventListener("click", goBack);
+            document.getElementById("nextBtn").addEventListener("click", goNext);
+
+            if (item.type === "single" || item.type === "multiple") {
+                document.querySelectorAll(".option").forEach((option) => {
+                    option.addEventListener("click", () => toggleOption(Number(option.dataset.index)));
+                });
+            } else {
+                document.getElementById("textAnswer").addEventListener("input", (event) => {
+                    answers[currentIndex] = event.target.value;
+                });
+            }
+        }
+
+        function getTypeText(type) {
+            if (type === "single") {
+                return "Elige una respuesta correcta.";
+            }
+
+            if (type === "multiple") {
+                return "Elige varias respuestas correctas.";
+            }
+
+            if (type === "short") {
+                return "Escribe una respuesta corta.";
+            }
+
+            return "Escribe una respuesta completa.";
+        }
+
+        function getQuestionScene(index) {
+            if (index === 7 || index === 8) {
+                return scenes.atacama;
+            }
+
+            if (index === 9 || index === 10) {
+                return scenes.rapaNui;
+            }
+
+            if (index === 15 || index >= 18) {
+                return scenes.patagonia;
+            }
+
+            return [scenes.panorama, scenes.patagonia, scenes.atacama][index % 3];
+        }
+
+        function getAnswerHtml(item, selected) {
+            if (item.type === "short" || item.type === "long") {
+                return `
+                    <textarea
+                        id="textAnswer"
+                        placeholder="${item.placeholder}"
+                    >${escapeHtml(selected || "")}</textarea>
+                `;
+            }
+
+            return `
+                <div class="options">
+                    ${item.options.map((option, index) => {
+                        const isSelected = Array.isArray(selected) && selected.includes(index);
+                        return `
+                            <div class="option ${isSelected ? "selected" : ""}" data-index="${index}">
+                                <span class="letter">${String.fromCharCode(65 + index)}</span>
+                                <span>${option}</span>
+                            </div>
+                        `;
+                    }).join("")}
+                </div>
+            `;
+        }
+
+        function toggleOption(optionIndex) {
+            const item = questions[currentIndex];
+
+            if (item.type === "single") {
+                answers[currentIndex] = [optionIndex];
+            }
+
+            if (item.type === "multiple") {
+                const currentAnswer = Array.isArray(answers[currentIndex]) ? [...answers[currentIndex]] : [];
+                const exists = currentAnswer.includes(optionIndex);
+
+                answers[currentIndex] = exists
+                    ? currentAnswer.filter((index) => index !== optionIndex)
+                    : [...currentAnswer, optionIndex];
+            }
+
+            renderQuestion();
+        }
+
+        function goBack() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        function goNext() {
+            const message = document.getElementById("message");
+            const answer = answers[currentIndex];
+
+            if (!isAnswered(answer)) {
+                message.textContent = "Primero responde la pregunta.";
+                return;
+            }
+
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+                return;
+            }
+
+            showResult();
+        }
+
+        function isAnswered(answer) {
+            if (Array.isArray(answer)) {
+                return answer.length > 0;
+            }
+
+            if (typeof answer === "string") {
+                return answer.trim().length >= 3;
+            }
+
+            return false;
+        }
+
+        function showResult() {
+            const result = calculateScore();
+            quizScreen.classList.add("hidden");
+            resultScreen.classList.remove("hidden");
+
+            finalScore.textContent = `${result.score} / ${questions.length}`;
+
+            const percent = Math.round((result.score / questions.length) * 100);
+
+            if (percent >= 85) {
+                resultIcon.textContent = "🏆";
+                resultTitle.textContent = `¡Excelente, ${playerName}!`;
+                resultText.textContent = "Conoces muy bien Chile. Tu resultado es muy alto.";
+            } else if (percent >= 60) {
+                resultIcon.textContent = "🎉";
+                resultTitle.textContent = `¡Buen trabajo, ${playerName}!`;
+                resultText.textContent = "Tienes un buen conocimiento sobre Chile, pero todavía puedes mejorar algunas respuestas.";
+            } else {
+                resultIcon.textContent = "📚";
+                resultTitle.textContent = `Sigue practicando, ${playerName}`;
+                resultText.textContent = "Este cuestionario te ayuda a repasar datos importantes sobre Chile.";
+            }
+
+            renderReview(result.details);
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const details = [];
+
+            questions.forEach((question, index) => {
+                const userAnswer = answers[index];
+                let correct = false;
+
+                if (question.type === "single" || question.type === "multiple") {
+                    correct = arraysEqualSorted(userAnswer || [], question.correct);
+                }
+
+                if (question.type === "short") {
+                    correct = checkShortAnswer(userAnswer || "");
+                }
+
+                if (question.type === "long") {
+                    correct = checkLongAnswer(userAnswer || "");
+                }
+
+                if (correct) {
+                    score++;
+                }
+
+                details.push({ question, userAnswer, correct, index });
+            });
+
+            return { score, details };
+        }
+
+        function arraysEqualSorted(first, second) {
+            const sortedFirst = [...first].sort((a, b) => a - b);
+            const sortedSecond = [...second].sort((a, b) => a - b);
+
+            return sortedFirst.length === sortedSecond.length
+                && sortedFirst.every((value, index) => value === sortedSecond[index]);
+        }
+
+        function checkShortAnswer(answer) {
+            const normalized = normalize(answer);
+            const keywords = [
+                "chile", "atacama", "pascua", "rapa nui", "terremoto",
+                "moai", "moais", "cobre", "patagonia", "andes", "4000"
+            ];
+
+            return normalized.length >= 10 && keywords.some((keyword) => normalized.includes(keyword));
+        }
+
+        function checkLongAnswer(answer) {
+            const normalized = normalize(answer);
+            const words = normalized.split(/\s+/).filter(Boolean);
+            const reasonWords = ["porque", "ya que", "paisajes", "atacama", "patagonia", "isla", "cultura", "naturaleza"];
+
+            return words.length >= 8 && reasonWords.some((word) => normalized.includes(word));
+        }
+
+        function normalize(text) {
+            return text
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+        }
+
+        function renderReview(details) {
+            answersReview.innerHTML = details.map((detail) => {
+                const userAnswerText = formatUserAnswer(detail.question, detail.userAnswer);
+                const correctAnswerText = formatCorrectAnswer(detail.question);
+
+                return `
+                    <div class="review-item ${detail.correct ? "" : "wrong"}">
+                        <div class="review-title">
+                            ${detail.correct ? "✅" : "❌"} ${detail.index + 1}. ${detail.question.question}
+                        </div>
+                        <div class="review-answer">Tu respuesta: ${userAnswerText}</div>
+                        ${correctAnswerText ? `<div class="review-answer">Respuesta correcta: ${correctAnswerText}</div>` : ""}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function formatUserAnswer(question, answer) {
+            if (Array.isArray(answer)) {
+                return answer
+                    .map((index) => `${String.fromCharCode(65 + index)}. ${question.options[index]}`)
+                    .join(", ") || "Sin respuesta";
+            }
+
+            return answer ? escapeHtml(answer) : "Sin respuesta";
+        }
+
+        function formatCorrectAnswer(question) {
+            if (question.type === "single" || question.type === "multiple") {
+                return question.correct
+                    .map((index) => `${String.fromCharCode(65 + index)}. ${question.options[index]}`)
+                    .join(", ");
+            }
+
+            if (question.type === "short") {
+                return "Ejemplo: El desierto de Atacama es uno de los lugares más secos del mundo.";
+            }
+
+            return "Ejemplo: Sí, porque Chile tiene paisajes como Atacama, la Patagonia y la Isla de Pascua.";
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
