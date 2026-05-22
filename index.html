@@ -123,8 +123,7 @@
             flex-wrap: wrap;
         }
 
-        input,
-        textarea {
+        input {
             width: 100%;
             border: 2px solid #dfe6f3;
             border-radius: 16px;
@@ -135,8 +134,7 @@
             transition: 0.25s;
         }
 
-        input:focus,
-        textarea:focus {
+        input:focus {
             border-color: #0039a6;
             box-shadow: 0 0 0 4px rgba(0, 57, 166, 0.12);
         }
@@ -444,13 +442,6 @@
             display: grid;
             place-items: center;
             font-weight: 900;
-        }
-
-        textarea {
-            min-height: 150px;
-            resize: vertical;
-            margin-top: 22px;
-            line-height: 1.5;
         }
 
         .actions {
@@ -980,16 +971,18 @@
                 correct: [0]
             },
             {
-                type: "short",
-                icon: "💡",
-                question: "Escribe un dato interesante sobre Chile.",
-                placeholder: "Ejemplo: El desierto de Atacama es uno de los lugares más secos del mundo."
+                type: "multiple",
+                icon: "🧳",
+                question: "¿Qué lugares puedes visitar en Chile?",
+                options: ["El desierto de Atacama", "Rapa Nui", "Torres del Paine", "El desierto del Sahara"],
+                correct: [0, 1, 2]
             },
             {
-                type: "long",
-                icon: "✈️",
-                question: "¿Te gustaría visitar Chile? ¿Por qué?",
-                placeholder: "Escribe tu respuesta completa..."
+                type: "multiple",
+                icon: "🧠",
+                question: "¿Qué elementos se relacionan con Chile?",
+                options: ["El cobre", "Los moáis", "La cordillera de los Andes", "La Torre Eiffel"],
+                correct: [0, 1, 2]
             }
         ];
 
@@ -1083,15 +1076,9 @@
             document.getElementById("prevBtn").addEventListener("click", goBack);
             document.getElementById("nextBtn").addEventListener("click", goNext);
 
-            if (item.type === "single" || item.type === "multiple") {
-                document.querySelectorAll(".option").forEach((option) => {
-                    option.addEventListener("click", () => toggleOption(Number(option.dataset.index)));
-                });
-            } else {
-                document.getElementById("textAnswer").addEventListener("input", (event) => {
-                    answers[currentIndex] = event.target.value;
-                });
-            }
+            document.querySelectorAll(".option").forEach((option) => {
+                option.addEventListener("click", () => toggleOption(Number(option.dataset.index)));
+            });
         }
 
         function getTypeText(type) {
@@ -1103,11 +1090,7 @@
                 return "Elige varias respuestas correctas.";
             }
 
-            if (type === "short") {
-                return "Escribe una respuesta corta.";
-            }
-
-            return "Escribe una respuesta completa.";
+            return "Elige una respuesta.";
         }
 
         function getQuestionScene(index) {
@@ -1127,15 +1110,6 @@
         }
 
         function getAnswerHtml(item, selected) {
-            if (item.type === "short" || item.type === "long") {
-                return `
-                    <textarea
-                        id="textAnswer"
-                        placeholder="${item.placeholder}"
-                    >${escapeHtml(selected || "")}</textarea>
-                `;
-            }
-
             return `
                 <div class="options">
                     ${item.options.map((option, index) => {
@@ -1200,10 +1174,6 @@
                 return answer.length > 0;
             }
 
-            if (typeof answer === "string") {
-                return answer.trim().length >= 3;
-            }
-
             return false;
         }
 
@@ -1245,14 +1215,6 @@
                     correct = arraysEqualSorted(userAnswer || [], question.correct);
                 }
 
-                if (question.type === "short") {
-                    correct = checkShortAnswer(userAnswer || "");
-                }
-
-                if (question.type === "long") {
-                    correct = checkLongAnswer(userAnswer || "");
-                }
-
                 if (correct) {
                     score++;
                 }
@@ -1269,32 +1231,6 @@
 
             return sortedFirst.length === sortedSecond.length
                 && sortedFirst.every((value, index) => value === sortedSecond[index]);
-        }
-
-        function checkShortAnswer(answer) {
-            const normalized = normalize(answer);
-            const keywords = [
-                "chile", "atacama", "pascua", "rapa nui", "terremoto",
-                "moai", "moais", "cobre", "patagonia", "andes", "4000"
-            ];
-
-            return normalized.length >= 10 && keywords.some((keyword) => normalized.includes(keyword));
-        }
-
-        function checkLongAnswer(answer) {
-            const normalized = normalize(answer);
-            const words = normalized.split(/\s+/).filter(Boolean);
-            const reasonWords = ["porque", "ya que", "paisajes", "atacama", "patagonia", "isla", "cultura", "naturaleza"];
-
-            return words.length >= 8 && reasonWords.some((word) => normalized.includes(word));
-        }
-
-        function normalize(text) {
-            return text
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .trim();
         }
 
         function renderReview(details) {
@@ -1321,7 +1257,7 @@
                     .join(", ") || "Sin respuesta";
             }
 
-            return answer ? escapeHtml(answer) : "Sin respuesta";
+            return "Sin respuesta";
         }
 
         function formatCorrectAnswer(question) {
@@ -1331,21 +1267,9 @@
                     .join(", ");
             }
 
-            if (question.type === "short") {
-                return "Ejemplo: El desierto de Atacama es uno de los lugares más secos del mundo.";
-            }
-
-            return "Ejemplo: Sí, porque Chile tiene paisajes como Atacama, la Patagonia y la Isla de Pascua.";
+            return "";
         }
 
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
     </script>
 </body>
 </html>
