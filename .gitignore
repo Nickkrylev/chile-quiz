@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.env
+*.sqlite*
+*.db*
+.credentials/
+.superpowers/
+.worktrees/
+test-results/
