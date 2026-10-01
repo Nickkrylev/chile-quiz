@@ -16,6 +16,9 @@ def create_app(config=None):
     app.before_request(load_user)
     from .attempts import bp as attempts_bp
     app.register_blueprint(attempts_bp)
+    from .google_auth import bp as google_bp, setup_oauth
+    setup_oauth(app)
+    app.register_blueprint(google_bp)
 
     @app.get('/api/health')
     def health():
