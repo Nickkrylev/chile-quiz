@@ -14,6 +14,8 @@ def create_app(config=None):
     from .auth import bp, load_user
     app.register_blueprint(bp)
     app.before_request(load_user)
+    from .attempts import bp as attempts_bp
+    app.register_blueprint(attempts_bp)
 
     @app.get('/api/health')
     def health():

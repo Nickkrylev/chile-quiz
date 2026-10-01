@@ -1,0 +1,407 @@
+{
+  "title": "Испанский язык · УО-6",
+  "source": "TEST УО-6.docx",
+  "questions": [
+    {
+      "id": 1,
+      "prompt": "¿Cuál es la opción correcta?",
+      "text": "Este modelo es ______ que el anterior.",
+      "choices": [
+        "más barato de",
+        "más barato",
+        "muy barato que",
+        "barato como"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Completa la frase:",
+      "text": "Mi nuevo teléfono es ______ que el antiguo.",
+      "choices": [
+        "el mejor que",
+        "más mejor",
+        "bueno más",
+        "mejor"
+      ],
+      "source_correct": [
+        3
+      ],
+      "correct": [
+        3
+      ],
+      "suggested_correct": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Elige la forma correcta:",
+      "text": "Este producto tiene ______ características que el otro.",
+      "choices": [
+        "más",
+        "muy",
+        "mucho",
+        "mejor"
+      ],
+      "source_correct": [
+        0
+      ],
+      "correct": [
+        0
+      ],
+      "suggested_correct": [
+        0
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Completa la frase:",
+      "text": "En la tienda hay ______ productos que en el supermercado.",
+      "choices": [
+        "menor",
+        "menos",
+        "poco",
+        "peor"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "¿Cuál es la opción correcta?",
+      "text": "Este ordenador es ______ de todos.",
+      "choices": [
+        "el más rápido",
+        "más rápido que",
+        "muy rápido que",
+        "el rápido más"
+      ],
+      "source_correct": [
+        0
+      ],
+      "correct": [
+        0
+      ],
+      "suggested_correct": [
+        0
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Completa la frase:",
+      "text": "En esta tienda hay ______ clientes como en la otra.",
+      "choices": [
+        "tanto",
+        "tan",
+        "tantos",
+        "más"
+      ],
+      "source_correct": [
+        2
+      ],
+      "correct": [
+        2
+      ],
+      "suggested_correct": [
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Elige la forma correcta del verbo traer:",
+      "text": "Mañana nosotros ______ los documentos a la reunión.",
+      "choices": [
+        "traimos",
+        "traemos",
+        "traeremos",
+        "traemoslos"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Completa con el verbo venir:",
+      "text": "Mis compañeros ______ mañana para hablar del nuevo producto.",
+      "choices": [
+        "vienen",
+        "vienemos",
+        "venimos",
+        "venís"
+      ],
+      "source_correct": [
+        0
+      ],
+      "correct": [
+        0
+      ],
+      "suggested_correct": [
+        0
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Elige la forma correcta del verbo recordar:",
+      "text": "Yo no ______ el nombre de la empresa.",
+      "choices": [
+        "recuerde",
+        "recuerdo",
+        "recordamos",
+        "recuerdas"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Completa la frase con elegir:",
+      "text": "Nosotros ______ el producto más barato.",
+      "choices": [
+        "ilegimos",
+        "eligimos",
+        "elegemos",
+        "elegimos"
+      ],
+      "source_correct": [
+        2
+      ],
+      "correct": [
+        2
+      ],
+      "suggested_correct": [
+        3
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Elige la forma correcta de repetir:",
+      "text": "¿Puedes ______ la información, por favor?",
+      "choices": [
+        "repitir",
+        "repetir",
+        "repeter",
+        "repites"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Completa la frase en Pretérito Perfecto:",
+      "text": "Esta semana la empresa ______ un producto nuevo.",
+      "choices": [
+        "ha presentado",
+        "presentó",
+        "presentaba",
+        "presenta"
+      ],
+      "source_correct": [
+        0
+      ],
+      "correct": [
+        0
+      ],
+      "suggested_correct": [
+        0
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "¿Cuál es la forma correcta?",
+      "text": "Yo ______ ya el billete para el viaje de negocios.",
+      "choices": [
+        "he compra",
+        "ha comprado",
+        "compré",
+        "he comprado"
+      ],
+      "source_correct": [
+        3
+      ],
+      "correct": [
+        3
+      ],
+      "suggested_correct": [
+        3
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Completa:",
+      "text": "¿______ alguna vez a Madrid por trabajo?",
+      "choices": [
+        "Has viajar",
+        "Has viajando",
+        "Has viajado",
+        "Viajaste has"
+      ],
+      "source_correct": [
+        2
+      ],
+      "correct": [
+        2
+      ],
+      "suggested_correct": [
+        2
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Elige la opción correcta:",
+      "text": "Mis compañeros ______ al hotel esta mañana.",
+      "choices": [
+        "han llegados",
+        "han llegado",
+        "han llegar",
+        "han llegaban"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Completa con el pronombre de objeto directo correcto:",
+      "text": "He comprado la impresora. ______ he comprado para la oficina.",
+      "choices": [
+        "Lo",
+        "La",
+        "Las",
+        "Los"
+      ],
+      "source_correct": [
+        0
+      ],
+      "correct": [
+        0
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Sustituye el complemento directo por un pronombre:",
+      "text": "Voy a reservar los billetes.",
+      "choices": [
+        "Voy a reservarlo.",
+        "Voy a reservarlas.",
+        "Voy a reservarlos.",
+        "Voy a reservarle."
+      ],
+      "source_correct": [
+        2
+      ],
+      "correct": [
+        2
+      ],
+      "suggested_correct": [
+        2
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Elige la opción correcta:",
+      "text": "¿Has visto el catálogo?\nSí, ______ he visto esta mañana.",
+      "choices": [
+        "los",
+        "la",
+        "lo",
+        "le"
+      ],
+      "source_correct": [
+        2
+      ],
+      "correct": [
+        2
+      ],
+      "suggested_correct": [
+        2
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Completa el diálogo:",
+      "text": "—¿Has comprado las muestras?—Sí, ______ he comprado para la presentación.",
+      "choices": [
+        "los",
+        "las",
+        "la",
+        "le"
+      ],
+      "source_correct": [
+        1
+      ],
+      "correct": [
+        1
+      ],
+      "suggested_correct": [
+        1
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Lee y elige la opción correcta:",
+      "text": "Marta está de viaje de negocios. Ha llegado a Barcelona y esta tarde tiene una reunión. Antes de salir del hotel, ha preparado todos los documentos y ha revisado la información del nuevo producto. En la reunión, quiere presentar una opción más barata y de mejor calidad.\n¿Qué quiere presentar Marta?",
+      "choices": [
+        "Una reunión nueva.",
+        "Un hotel más grande.",
+        "Un billete de avión más barato.",
+        "Un producto más barato y de mejor calidad"
+      ],
+      "source_correct": [
+        3
+      ],
+      "correct": [
+        3
+      ],
+      "suggested_correct": [
+        3
+      ]
+    }
+  ]
+}
