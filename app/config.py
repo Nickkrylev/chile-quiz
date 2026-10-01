@@ -18,5 +18,6 @@ def settings():
         GOOGLE_HD=os.getenv('GOOGLE_HD', 'student.karazin.ua'),
         STUDENT_DOMAIN='student.karazin.ua',
         GOOGLE_TEACHER_EMAILS={x.strip().lower() for x in os.getenv('GOOGLE_TEACHER_EMAILS', '').split(',') if x.strip()},
+        TRUST_PROXY=os.getenv('TRUST_PROXY', '0') == '1',
         MAX_CONTENT_LENGTH=16384,
     )

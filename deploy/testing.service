@@ -1,0 +1,22 @@
+[Unit]
+Description=UO6 testing platform
+After=network.target
+
+[Service]
+Type=simple
+User=uo6-testing
+Group=uo6-testing
+WorkingDirectory=/opt/uo6-testing/current
+EnvironmentFile=/etc/uo6-testing.env
+ExecStart=/opt/uo6-testing/venv/bin/gunicorn --workers 2 --bind 127.0.0.1:5056 --timeout 30 --error-logfile - app:create_app()
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uo6-testing
+
+[Install]
+WantedBy=multi-user.target

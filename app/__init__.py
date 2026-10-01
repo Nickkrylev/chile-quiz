@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from werkzeug.exceptions import HTTPException
 from .config import settings, ROOT
 from .db import close_db, get_db
@@ -10,6 +10,8 @@ def create_app(config=None):
     app.config.update(settings())
     app.config.update(config or {})
     app.session_interface = SQLiteSessions()
+    from .cli import register_cli
+    register_cli(app)
     app.teardown_appcontext(close_db)
     from .auth import bp, load_user
     app.register_blueprint(bp)
@@ -39,4 +41,14 @@ def create_app(config=None):
         response.headers['Referrer-Policy'] = 'same-origin'
         response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         return response
+    @app.get('/')
+    def index():
+        return render_template('index.html')
+
+    if app.config.get('TRUST_PROXY', False):
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+    if app.config['BASE_PATH']:
+        from .prefix import PrefixMiddleware
+        app.wsgi_app = PrefixMiddleware(app.wsgi_app, app.config['BASE_PATH'])
     return app

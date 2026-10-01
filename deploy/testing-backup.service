@@ -1,0 +1,15 @@
+[Unit]
+Description=Back up UO6 SQLite database
+
+[Service]
+Type=oneshot
+User=uo6-testing
+Group=uo6-testing
+WorkingDirectory=/opt/uo6-testing/current
+EnvironmentFile=/etc/uo6-testing.env
+ExecStart=/opt/uo6-testing/venv/bin/flask --app app backup --destination /var/lib/uo6-testing/backups
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uo6-testing
