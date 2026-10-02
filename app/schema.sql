@@ -27,7 +27,3 @@ CREATE TABLE IF NOT EXISTS answers (
 CREATE TABLE IF NOT EXISTS audit_events (
  id INTEGER PRIMARY KEY, user_id INTEGER REFERENCES users(id), action TEXT NOT NULL, created REAL NOT NULL
 );
-
-CREATE TABLE IF NOT EXISTS google_teacher_bindings (
- email TEXT PRIMARY KEY, issuer TEXT NOT NULL, subject TEXT NOT NULL
-);

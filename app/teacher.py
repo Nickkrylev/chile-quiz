@@ -3,7 +3,7 @@ import io
 import json
 from datetime import datetime, timezone
 from flask import Blueprint, request, g, abort, Response
-from .auth import require_user, payload, google_enabled
+from .auth import require_user, payload
 from .db import get_db, transaction
 from .sessions import now
 from .attempts import _advance
@@ -30,7 +30,7 @@ def overview():
     total, completed = db.execute('SELECT COUNT(*),COUNT(finished) FROM attempts').fetchone()
     mean = db.execute('SELECT AVG(score) FROM (SELECT COALESCE(SUM(b.correct),0)*5.0 AS score FROM attempts a LEFT JOIN answers b ON a.id=b.attempt_id WHERE a.finished IS NOT NULL GROUP BY a.id)').fetchone()[0]
     return dict(total=total,completed=completed,active=total-completed,average=round(mean,1) if mean is not None else None,
-                test=test_settings(),google_enabled=google_enabled())
+                test=test_settings())
 
 
 def filtered_rows(paginate=True):
@@ -122,8 +122,8 @@ def settings():
     with transaction() as db:
         row = db.execute('SELECT * FROM tests WHERE id=1').fetchone()
         approved = row['keys_approved'] or data.get('approve_suggested_keys') is True
-        if data['is_open'] and (not google_enabled() or not approved):
-            abort(409,'Щоб відкрити тест, підключіть Google і підтвердьте ключі відповідей.')
+        if data['is_open'] and not approved:
+            abort(409,'Щоб відкрити тест, спочатку підтвердьте ключі відповідей.')
         if data.get('approve_suggested_keys') is True and not row['keys_approved']:
             questions = json.loads(row['questions'])
             for q in questions:

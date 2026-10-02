@@ -76,47 +76,53 @@ async function boot() {
 }
 
 function login() {
-  const oauthError = new URLSearchParams(location.search).has('login_error');
-  show(`<div class="login-layout">
-    <section class="intro"><div class="eyebrow">Контроль знань · УО-6</div><h1>Тест з<br>іспанської мови</h1><p class="lead">Ступені порівняння, дієслова та ділова комунікація.</p>
-      <div class="exam-facts"><div class="fact"><strong>20</strong><span>запитань</span></div><div class="fact"><strong>20 сек.</strong><span>на кожне запитання</span></div><div class="fact"><strong>1</strong><span>спроба</span></div></div>
-      <p class="small-note">Перед початком перевірте інтернет-з’єднання. Таймер запускається лише після натискання «Розпочати тест».</p>
-    </section>
-    <section class="panel login-card"><div class="eyebrow">Вхід учасника</div><h2>Навчальний обліковий запис</h2><p class="panel-subtitle">Увійдіть з поштою <strong>student.karazin.ua</strong></p>
-      ${sessionInfo.google_enabled ? '<a class="button secondary full" href="auth/google"><span class="google-letter" aria-hidden="true">G</span> Увійти через Google</a>' : '<button class="button secondary full" disabled><span class="google-letter" aria-hidden="true">G</span> Увійти через Google</button><div class="notice">Вхід студентів ще не відкрито. Викладач повідомить, коли можна буде розпочати тест.</div>'}
-      ${oauthError ? '<div class="notice error">Не вдалося підтвердити навчальний обліковий запис. Оберіть пошту student.karazin.ua або зверніться до викладача.</div>' : ''}
-      <p class="small-note">Ім’я та прізвище можна підтвердити перед початком. Результат буде доступний вам і викладачеві.</p>
-      ${sessionInfo.local_teacher_enabled ? `<div class="divider"></div><details id="teacher-login"><summary>Тестовий вхід викладача</summary><form id="login-form">
-        <div class="field"><label for="email">Логін</label><input class="input" id="email" name="email" type="email" autocomplete="username" value="admin@student.karazin.ua" required></div>
-        <div class="field"><label for="password">Пароль платформи</label><input class="input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256"></div>
-        <p id="login-error" class="notice error hidden" role="alert"></p><button class="button full" type="submit">Увійти в кабінет</button>
-        <p class="field-hint">Окремий тестовий обліковий запис. Використовуйте пароль платформи.</p></form></details>` : ''}
-    </section></div>`, 'login');
+  show(`<div class="login-layout"><section class="panel login-card">
+    <div class="eyebrow">УО-6 · Іспанська мова</div>
+    <h1>Навчальне тестування</h1>
+    <p class="notice exam-notice">Вам надається одна спроба. На кожне запитання — 20 секунд.</p>
+    <form id="student-login-form">
+      <div class="field"><label for="student-email">Студентська пошта</label><input class="input" id="student-email" type="email" autocomplete="email" inputmode="email" placeholder="name@student.karazin.ua" maxlength="254" required></div>
+      <div class="row"><div class="field"><label for="last-name">Прізвище</label><input class="input" id="last-name" autocomplete="family-name" maxlength="80" required></div><div class="field"><label for="first-name">Ім’я</label><input class="input" id="first-name" autocomplete="given-name" maxlength="80" required></div></div>
+      <p class="notice error hidden" id="student-login-error" role="alert"></p>
+      <button class="button full" type="submit">Продовжити <span aria-hidden="true">→</span></button>
+    </form>
+    ${sessionInfo.local_teacher_enabled ? `<div class="divider"></div><details id="teacher-login"><summary>Вхід викладача</summary><form id="login-form">
+      <div class="field"><label for="teacher-email">Логін</label><input class="input" id="teacher-email" name="email" type="email" autocomplete="username" value="admin@student.karazin.ua" required></div>
+      <div class="field"><label for="password">Пароль</label><input class="input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256"></div>
+      <p id="login-error" class="notice error hidden" role="alert"></p><button class="button full" type="submit">До кабінету</button>
+    </form></details>` : ''}
+  </section></div>`, 'login');
+  $('#student-login-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const button=$('button[type=submit]',event.currentTarget);button.disabled=true;
+    try {
+      await api('api/auth/student',{email:$('#student-email').value,first_name:$('#first-name').value,last_name:$('#last-name').value});
+      sessionInfo=await api('api/session');testInfo=await api('api/test');account();
+      const current=await api('api/attempts/current');
+      if(current.attempt)renderAttempt(current.attempt);else rules();
+    } catch(error){errorBox($('#student-login-error'),error.message);button.disabled=false;}
+  });
   $('#login-form')?.addEventListener('submit', async event => {
     event.preventDefault();
     const button = $('button',event.currentTarget); button.disabled = true;
-    try { await api('api/auth/local', {email:$('#email').value,password:$('#password').value}); await boot(); }
+    try { await api('api/auth/local', {email:$('#teacher-email').value,password:$('#password').value}); await boot(); }
     catch (error) { errorBox($('#login-error'),error.message); button.disabled=false; }
   });
 }
-
 function rules() {
-  const user = sessionInfo.user;
-  show(`<section class="panel start-card"><div class="eyebrow">Перед початком</div><h1>Перевірте свої дані</h1><p class="muted">${esc(testInfo.title)}</p>
-    <form id="start-form"><div class="row"><div class="field"><label for="last-name">Прізвище</label><input class="input" id="last-name" autocomplete="family-name" maxlength="80" required value="${esc(user.last_name)}"></div><div class="field"><label for="first-name">Ім’я</label><input class="input" id="first-name" autocomplete="given-name" maxlength="80" required value="${esc(user.first_name)}"></div></div>
-    <div class="notice">${esc(user.email)} · Одна спроба на навчальний обліковий запис</div>
-    <ol class="rules"><li>У кожному з 20 запитань оберіть одну відповідь і натисніть «Відповісти».</li><li>На запитання відведено <strong>20 секунд</strong>. Коли час спливе, відкриється наступне.</li><li>Таймер працює навіть після закриття вкладки або втрати інтернету.</li><li>Повернутися до попереднього запитання або почати заново не можна.</li></ol>
-    <label class="check-label"><input type="checkbox" id="accept-rules" required><span>Дані правильні, правила зрозумілі. Я готовий / готова розпочати.</span></label>
-    ${!testInfo.is_open ? '<div class="notice warning">Приймання відповідей поки закрито. Дочекайтеся вказівки викладача.</div>' : ''}
-    <div class="notice error hidden" id="start-error" role="alert"></div><button class="button full" type="submit" ${testInfo.is_open?'':'disabled'}>Розпочати тест <span aria-hidden="true">→</span></button></form></section>`, 'rules');
-  $('#start-form').onsubmit = async event => {
-    event.preventDefault();
-    const button = $('button',event.currentTarget);button.disabled=true;
-    try { renderAttempt(await api('api/attempts',{first_name:$('#first-name').value.trim(),last_name:$('#last-name').value.trim()})); }
-    catch (error) {errorBox($('#start-error'),error.message);button.disabled=false;}
+  const user=sessionInfo.user;
+  show(`<section class="panel start-card"><div class="eyebrow">Іспанська мова · УО-6</div><h1>Готові розпочати?</h1>
+    <p class="notice exam-notice">Вам надається одна спроба. На кожне запитання — 20 секунд.</p>
+    <p class="muted">${esc(user.first_name+' '+user.last_name)} · ${esc(user.email)}</p>
+    ${!testInfo.is_open?'<div class="notice warning">Тест поки закритий. Зверніться до викладача.</div>':''}
+    <p class="notice error hidden" id="start-error" role="alert"></p>
+    <button class="button full" id="start-test" ${testInfo.is_open?'':'disabled'}>Розпочати тест <span aria-hidden="true">→</span></button></section>`, 'rules');
+  $('#start-test').onclick=async event=>{
+    const button=event.currentTarget;button.disabled=true;
+    try {renderAttempt(await api('api/attempts',{first_name:user.first_name,last_name:user.last_name}));}
+    catch(error){errorBox($('#start-error'),error.message);button.disabled=false;}
   };
 }
-
 function renderAttempt(attempt) {
   state = attempt;
   if (attempt.status === 'completed') return result(attempt);
@@ -222,11 +228,11 @@ async function dashboard(){
       <div class="metrics"><div class="metric"><div class="metric-label">Усього учасників</div><div class="metric-value">${overview.total}</div></div><div class="metric"><div class="metric-label">Завершили тест</div><div class="metric-value">${overview.completed}</div></div><div class="metric"><div class="metric-label">Проходять зараз</div><div class="metric-value">${overview.active}</div></div><div class="metric"><div class="metric-label">Середній результат</div><div class="metric-value">${overview.average==null?'—':overview.average+'%'}</div></div></div>
       <section class="panel table-panel"><div class="section-head"><h2>Учасники</h2><a class="button secondary small" href="api/teacher/export.csv" id="export-link">Завантажити CSV ↓</a></div><form class="filters" id="filters"><label class="sr-only" for="search">Пошук за ім’ям або поштою</label><input class="input" id="search" type="search" placeholder="Пошук за ім’ям або поштою"><label class="sr-only" for="status">Статус</label><select class="input" id="status"><option value="">Усі статуси</option value="completed">Завершено</option><option value="active">У процесі</option></select><button class="button secondary" type="submit">Знайти</button></form><div id="participants" aria-live="polite"><div class="loading">Завантаження результатів…</div></div></section>
       <section class="panel settings-panel"><div class="settings-grid"><div><div class="section-head"><h2>Доступ до тесту</h2><span class="tag ${test.is_open?'green':'amber'}">${test.is_open?'Відкрито':'Закрито'}</span></div>
-      ${!overview.google_enabled?'<div class="notice warning">Вхід студентів через Google ще не підключено. Поки можна перевірити запитання, таймер та інтерфейс у режимі перегляду.</div>':'<p>Студенти входять з навчальною поштою student.karazin.ua.</p>'}
+      <p>Студенти вводять адресу <strong>@student.karazin.ua</strong>. Спроба закріплюється за введеною поштою. Адреса не перевіряється листом або входом в університетський акаунт.</p>
       ${!test.keys_approved?'<p>Перед відкриттям перевірте уточнення до ключів:</p><ul class="key-notes"><li>№7: прийняти b і c — обидві форми допустимі.</li><li>№10: правильна відповідь d — elegimos.</li><li>№16: правильна відповідь b — La.</li></ul><label class="check-label"><input id="approve-keys" type="checkbox"><span>Я перевірив / перевірила запитання та приймаю ці уточнення.</span></label>':'<p class="notice success">Ключі перевірено. Уточнення №7, №10 та №16 прийнято.</p>'}
-      <button class="button secondary" id="toggle-test" ${!overview.google_enabled&&!test.is_open?'disabled':''}>${test.is_open?'Закрити приймання нових спроб':'Відкрити тест для студентів'}</button>
+      <button class="button secondary" id="toggle-test" >${test.is_open?'Закрити приймання нових спроб':'Відкрити тест для студентів'}</button>
       ${!test.keys_approved?'<button class="text-button" id="save-keys">Зберегти перевірені ключі</button>':''}<p class="field-hint">Закриття не перериває вже розпочаті спроби.</p></div>
-      <div><h2>Обліковий запис</h2><p>${esc(sessionInfo.user.email)}</p><p>${sessionInfo.user.issuer==='local'?'Тестовий вхід викладача. Пароль діє лише на цій платформі.':'Вхід через Google.'}</p>${sessionInfo.user.issuer==='local'?'<button class="button secondary" id="password-button">Змінити пароль</button>':''}</div></div></section>`, 'dashboard');
+      <div><h2>Обліковий запис</h2><p>${esc(sessionInfo.user.email)}</p><p>${sessionInfo.user.issuer==='local'?'Тестовий вхід викладача. Пароль діє лише на цій платформі.':'Вхід викладача через локальний обліковий запис.'}</p>${sessionInfo.user.issuer==='local'?'<button class="button secondary" id="password-button">Змінити пароль</button>':''}</div></div></section>`, 'dashboard');
     $('#preview-button').onclick=startPreview;
     $('#questions-button').onclick=questionsView;
     $('#password-button')?.addEventListener('click',passwordView);
