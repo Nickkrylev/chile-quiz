@@ -8,12 +8,13 @@ def test_prefix_routes_cookies_and_no_neighbor(tmp_path):
     with app.app_context():
         init_db()
     c = app.test_client()
-    assert c.get('/testing/').status_code == 200
+    first = c.get('/testing/')
+    assert first.status_code == 200
     assert c.get('/testing/static/app.js').status_code == 200
     r = c.get('/testing/api/session')
     assert r.status_code == 200
-    assert 'Path=/testing/' in r.headers['Set-Cookie']
-    assert 'Secure' in r.headers['Set-Cookie'] and 'HttpOnly' in r.headers['Set-Cookie']
+    assert 'Path=/testing/' in first.headers['Set-Cookie']
+    assert 'Secure' in first.headers['Set-Cookie'] and 'HttpOnly' in first.headers['Set-Cookie']
     assert c.get('/api/session').status_code == 404
 
 

@@ -41,7 +41,7 @@ def _state(db, a, t):
 def _owned(db, uid, aid):
     row = db.execute('SELECT * FROM attempts WHERE id=? AND user_id=?',(aid,uid)).fetchone()
     if not row:
-        abort(404,'Попытка не найдена.')
+        abort(404,'Спробу не знайдено.')
     return row
 
 
@@ -52,10 +52,10 @@ def start_attempt(user_id, test_id, now):
             return _state(db, _advance(db,existing,now), now)
         test = db.execute('SELECT * FROM tests WHERE id=?',(test_id,)).fetchone()
         if not test or not test['is_open'] or not test['keys_approved']:
-            abort(409,'Приём ответов пока закрыт. Обратитесь к преподавателю.')
+            abort(409,'Приймання відповідей поки закрито. Зверніться до викладача.')
         user = db.execute('SELECT * FROM users WHERE id=?',(user_id,)).fetchone()
         if not user or not user['first_name'].strip() or not user['last_name'].strip():
-            abort(400,'Введите имя и фамилию.')
+            abort(400,'Введіть ім’я та прізвище.')
         aid = db.execute('INSERT INTO attempts(user_id,test_id,first_name,last_name,questions,version,started,deadline) VALUES(?,?,?,?,?,?,?,?)',
                         (user_id,test_id,user['first_name'],user['last_name'],test['questions'],test['version'],now,now+SECONDS)).lastrowid
         return _state(db,dict(_owned(db,user_id,aid)),now)
@@ -68,14 +68,14 @@ def attempt_state(user_id, attempt_id, now):
 
 def submit_answer(user_id, attempt_id, question_index, choice, now):
     if type(question_index) is not int or type(choice) is not int or not 0 <= choice <= 3:
-        abort(400,'Выберите один вариант ответа.')
+        abort(400,'Оберіть один варіант відповіді.')
     with transaction() as db:
         a = _advance(db,_owned(db,user_id,attempt_id),now)
         # Retries and stale tabs only return authoritative state.
         if a['finished'] is not None or question_index < a['question_index']:
             return _state(db,a,now)
         if question_index != a['question_index']:
-            abort(409,'Вопрос изменился. Обновите состояние теста.')
+            abort(409,'Запитання змінилося. Оновіть стан тесту.')
         questions = json.loads(a['questions'])
         db.execute('INSERT INTO answers VALUES(?,?,?,?,?)', (attempt_id,question_index,choice,int(choice in questions[question_index]['correct']),now))
         a['question_index'] += 1
@@ -100,7 +100,7 @@ def start():
     data = payload()
     first, last = data.get('first_name',''),data.get('last_name','')
     if any(not isinstance(x,str) or not 1 <= len(x.strip()) <= 80 or any(ord(c)<32 for c in x) for x in (first,last)):
-        abort(400,'Укажите имя и фамилию, до 80 символов в каждом поле.')
+        abort(400,'Укажіть ім’я та прізвище, до 80 символів у кожному полі.')
     get_db().execute('UPDATE users SET first_name=?,last_name=? WHERE id=?',(first.strip(),last.strip(),g.user['id']))
     return start_attempt(g.user['id'],1,now())
 

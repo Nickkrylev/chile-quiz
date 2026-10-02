@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
  id INTEGER PRIMARY KEY, issuer TEXT NOT NULL, subject TEXT NOT NULL,
  email TEXT NOT NULL, first_name TEXT NOT NULL DEFAULT '', last_name TEXT NOT NULL DEFAULT '',
+ auth_version INTEGER NOT NULL DEFAULT 0,
  role TEXT NOT NULL CHECK(role IN ('teacher','student')), password_hash TEXT,
  UNIQUE(issuer,subject)
 );
@@ -25,4 +26,8 @@ CREATE TABLE IF NOT EXISTS answers (
 );
 CREATE TABLE IF NOT EXISTS audit_events (
  id INTEGER PRIMARY KEY, user_id INTEGER REFERENCES users(id), action TEXT NOT NULL, created REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS google_teacher_bindings (
+ email TEXT PRIMARY KEY, issuer TEXT NOT NULL, subject TEXT NOT NULL
 );

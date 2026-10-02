@@ -38,5 +38,5 @@ for q,key in zip(questions, keys):
     q['source_correct'] = ['abcd'.index(key)]
     q['correct'] = q['source_correct'][:]
     q['suggested_correct'] = {7:[1,2],10:[3],16:[1]}.get(q['id'],q['correct'][:])
-Path('data/test-uo6.json').write_text(json.dumps({'title':'Испанский язык · УО-6','source':'TEST УО-6.docx','questions':questions},ensure_ascii=False,indent=2)+'\n')
+Path('data/test-uo6.json').write_text(json.dumps({'title':'Іспанська мова · УО-6','source':'TEST УО-6.docx','questions':questions},ensure_ascii=False,indent=2)+'\n')
 print('Imported 20 questions, 4 choices each; source keys preserved.')

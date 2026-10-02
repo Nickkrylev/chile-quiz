@@ -71,7 +71,7 @@ def detail(aid):
     db = get_db()
     row = db.execute('SELECT a.*,u.email FROM attempts a JOIN users u ON a.user_id=u.id WHERE a.id=?',(aid,)).fetchone()
     if not row:
-        abort(404,'Попытка не найдена.')
+        abort(404,'Спробу не знайдено.')
     result = dict(row)
     result['questions'] = json.loads(result['questions'])
     result['answers'] = [dict(r) for r in db.execute('SELECT * FROM answers WHERE attempt_id=? ORDER BY question_index',(aid,))]
@@ -95,10 +95,10 @@ def export():
     rows,_ = filtered_rows(False)
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(['Фамилия','Имя','Email','Статус','Начало (UTC)','Завершение (UTC)','Баллы из 20'])
+    writer.writerow(['Прізвище','Ім’я','Email','Статус','Початок (UTC)','Завершення (UTC)','Бали з 20'])
     for row in rows:
         writer.writerow([csv_safe(row['last_name']),csv_safe(row['first_name']),csv_safe(row['email']),
-                         'Завершён' if row['finished'] is not None else 'В процессе',date(row['started']),date(row['finished']),row['score']])
+                         'Завершено' if row['finished'] is not None else 'У процесі',date(row['started']),date(row['finished']),row['score']])
     return Response('\ufeff'+output.getvalue(),mimetype='text/csv',headers={'Content-Disposition':'attachment; filename="uo6-results.csv"'})
 
 
@@ -118,12 +118,12 @@ def preview():
 def settings():
     data = payload()
     if type(data.get('is_open')) is not bool:
-        abort(400,'Укажите состояние теста.')
+        abort(400,'Укажіть стан тесту.')
     with transaction() as db:
         row = db.execute('SELECT * FROM tests WHERE id=1').fetchone()
         approved = row['keys_approved'] or data.get('approve_suggested_keys') is True
         if data['is_open'] and (not google_enabled() or not approved):
-            abort(409,'Для открытия теста подключите Google и подтвердите ключи ответов.')
+            abort(409,'Щоб відкрити тест, підключіть Google і підтвердьте ключі відповідей.')
         if data.get('approve_suggested_keys') is True and not row['keys_approved']:
             questions = json.loads(row['questions'])
             for q in questions:

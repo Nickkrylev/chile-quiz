@@ -44,12 +44,17 @@ class SQLiteSessions(SessionInterface):
         # Existing sessions only update: a concurrent logout/password change cannot resurrect them.
         values = (json.dumps(dict(session)), session.get('user_id'), session.expires, digest(session.token))
         db = get_db()
+        if session.fresh and session.get('user_id'):
+            user = db.execute('SELECT issuer,auth_version FROM users WHERE id=?', (session['user_id'],)).fetchone()
+            if not user or (user['issuer'] == 'local' and session.get('auth_version') != user['auth_version']):
+                return
         if session.fresh:
             db.execute('INSERT INTO sessions(data,user_id,expires,token_hash) VALUES(?,?,?,?)', values)
         else:
             db.execute('UPDATE sessions SET data=?,user_id=?,expires=? WHERE token_hash=?', values)
         db.execute('DELETE FROM sessions WHERE expires<?', (now(),))
-        response.set_cookie(app.config['SESSION_COOKIE_NAME'], session.token,
+        if session.fresh:
+            response.set_cookie(app.config['SESSION_COOKIE_NAME'], session.token,
                             max_age=max(0, int(session.expires-now())), httponly=True,
                             secure=app.config['SESSION_COOKIE_SECURE'], samesite='Lax',
                             path=app.config['BASE_PATH'] + '/')

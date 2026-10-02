@@ -26,7 +26,7 @@ def register_cli(app):
             with os.fdopen(fd,'w') as output:
                 with transaction():
                     create_local_teacher(email,password)
-                    output.write(f"Платформа: {current_app.config['PUBLIC_URL']}/\nЛогин: {email}\nПароль: {password}\n\nТестовый вход преподавателя. Пароль меняется в кабинете.\n")
+                    output.write(f"Платформа: {current_app.config['PUBLIC_URL']}/\nЛогін: {email}\nПароль: {password}\n\nТестовий вхід викладача. Пароль змінюється в кабінеті.\n")
         except BaseException:
             credentials_file.unlink(missing_ok=True)
             raise

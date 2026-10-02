@@ -40,3 +40,32 @@ def test_password_change_revokes_other_sessions(app, teacher):
 def test_logout(teacher):
     assert post(teacher, '/api/auth/logout', {}).status_code == 200
     assert teacher.get('/api/session').json['user'] is None
+
+
+def test_inflight_old_password_cannot_create_session(app,client,monkeypatch):
+    import app.auth as auth
+    from app.db import get_db
+    from werkzeug.security import generate_password_hash
+    original=auth.check_password_hash
+    done=False
+    def concurrent_change(encoded,password):
+        nonlocal done
+        valid=original(encoded,password)
+        if valid and not done:
+            done=True
+            with app.app_context():
+                db=get_db()
+                # Interleave a completed password replacement before login persists its session.
+                db.execute("UPDATE users SET password_hash=? WHERE issuer='local'",(generate_password_hash('replacement-password-123456'),))
+                columns={r[1] for r in db.execute('PRAGMA table_info(users)')}
+                if 'auth_version' in columns:db.execute('UPDATE users SET auth_version=auth_version+1')
+                db.execute('DELETE FROM sessions WHERE user_id IS NOT NULL')
+        return valid
+    monkeypatch.setattr(auth,'check_password_hash',concurrent_change)
+    post(client,'/api/auth/local',{'email':'admin@student.karazin.ua','password':'test-password-123456789'})
+    assert client.get('/api/session').json['user'] is None
+
+
+def test_existing_responses_do_not_overwrite_rotated_cookie(teacher):
+    response=teacher.get('/api/session')
+    assert 'Set-Cookie' not in response.headers

@@ -39,6 +39,8 @@ def transaction():
 def init_db():
     db = get_db()
     db.executescript((ROOT / 'app/schema.sql').read_text())
+    if 'auth_version' not in {row[1] for row in db.execute('PRAGMA table_info(users)')}:
+        db.execute('ALTER TABLE users ADD COLUMN auth_version INTEGER NOT NULL DEFAULT 0')
     source = ROOT / 'data/test-uo6.json'
     if source.exists():
         data = json.loads(source.read_text())

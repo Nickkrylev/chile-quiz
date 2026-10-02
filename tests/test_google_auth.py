@@ -71,3 +71,13 @@ def test_signed_oidc_callback_validation(app,client,monkeypatch,fault):
         with app.app_context():
             from app.db import get_db
             assert get_db().execute("SELECT COUNT(*) FROM users WHERE email='admin@student.karazin.ua'").fetchone()[0]==2
+
+
+def test_google_teacher_binding_rejects_reassigned_email(app):
+    from app.google_auth import resolve_identity
+    identity={'issuer':'https://accounts.google.com','sub':'original','email':'teacher@example.test','first_name':'T','last_name':'One','role':'teacher'}
+    with app.app_context():
+        first=resolve_identity(identity)
+        assert resolve_identity(identity)==first
+        with pytest.raises(Forbidden):
+            resolve_identity({**identity,'sub':'new-owner'})

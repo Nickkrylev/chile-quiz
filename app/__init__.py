@@ -31,7 +31,9 @@ def create_app(config=None):
 
     @app.errorhandler(HTTPException)
     def http_error(error):
-        return jsonify(error=error.description), error.code
+        defaults = {400:'Некоректний запит.',401:'Увійдіть в обліковий запис.',403:'Доступ заборонено.',404:'Сторінку не знайдено.',405:'Дію не підтримано.',413:'Запит завеликий.',500:'Помилка сервера. Спробуйте ще раз.'}
+        message = defaults.get(error.code, 'Не вдалося виконати запит.') if error.description == type(error).description else error.description
+        return jsonify(error=message), error.code
 
     @app.after_request
     def headers(response):
