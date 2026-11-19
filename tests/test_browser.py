@@ -14,8 +14,8 @@ def browser_student(app):
     app.config['CLOCK']=time.time
     with app.app_context():
         db=get_db()
-        uid=db.execute("INSERT INTO users(issuer,subject,email,role,first_name,last_name) VALUES('google','browser-student','student@student.karazin.ua','student','Ім’я','Прізвище')").lastrowid
-        db.execute('UPDATE tests SET is_open=1,keys_approved=1')
+        uid=db.execute("INSERT INTO users(issuer,subject,email,role,first_name,last_name) VALUES('student_email','student@student.karazin.ua','student@student.karazin.ua','student','Ім’я','Прізвище')").lastrowid
+        db.execute("UPDATE tests SET is_open=1,keys_approved=1,status='open'")
     client=app.test_client()
     with client.session_transaction() as session:session['user_id']=uid
     token=client.get_cookie('testing_session').value
@@ -27,8 +27,7 @@ def browser_student(app):
         context.add_cookies([{'name':'testing_session','value':token,'domain':'127.0.0.1','path':'/','httpOnly':True,'sameSite':'Lax'}])
         page=context.new_page()
         page.goto(f'http://127.0.0.1:{server.server_port}/')
-        page.locator('#accept-rules').check()
-        page.locator('#start-form button').click()
+        page.locator('#start-test').click()
         page.locator('#choices').wait_for()
         yield page
         browser.close()

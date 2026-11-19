@@ -33,7 +33,7 @@ def test_csv_detail_expiration_and_student_denied(app, teacher):
     from app.attempts import start_attempt
     with app.app_context():
         db = get_db()
-        uid = db.execute("INSERT INTO users(issuer,subject,email,role,first_name,last_name) VALUES('google','one','x@student.karazin.ua','student','=1+1','Имя,Фамилия')").lastrowid
+        uid = db.execute("INSERT INTO users(issuer,subject,email,role,first_name,last_name) VALUES('student_email','x@student.karazin.ua','x@student.karazin.ua','student','=1+1','Имя,Фамилия')").lastrowid
         db.execute('UPDATE tests SET is_open=1,keys_approved=1')
         aid = start_attempt(uid,1,100)['id']
     r = teacher.get('/api/teacher/overview')

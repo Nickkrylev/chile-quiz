@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Навчальне тестування з іспанської мови. УО-6.">
+  <meta name="description" content="Платформа навчального тестування.">
   <meta name="theme-color" content="#173b66">
-  <title>УО-6 · Навчальне тестування</title>
-  <link rel="stylesheet" href="static/styles.css">
-  <script src="static/app.js" defer></script>
+  <title>Навчальне тестування</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти до вмісту</a>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Навчальне тестування — головна">
-      <span class="brand-mark" aria-hidden="true">УО<span>06</span></span>
-      <span class="brand-name">Навчальне тестування<small>Іспанська мова</small></span>
-    </a>
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Відкрити меню" aria-expanded="false" aria-controls="site-menu" hidden>
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+    <nav class="site-menu" id="site-menu" aria-label="Меню викладача" hidden></nav>
     <div id="account" class="account"></div>
   </header>
-  <main id="main" tabindex="-1"><div class="loading" role="status">Завантаження платформи…</div></main>
-  <footer class="site-footer"><span>УО-6 · Іспанська мова</span></footer>
+  <main id="main" tabindex="-1" data-public-code="{{ public_code or '' }}"><div class="loading" role="status">Завантаження платформи…</div></main>
+  <footer class="site-footer"><span>Навчальне тестування</span></footer>
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
   <noscript><p class="notice">Для проходження тесту увімкніть JavaScript у браузері.</p></noscript>
 </body>

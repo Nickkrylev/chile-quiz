@@ -9,7 +9,8 @@ def seeded(app):
         init_db()
         db = get_db()
         for subject in ['student1','student2']:
-            db.execute("INSERT INTO users(issuer,subject,email,role,first_name,last_name) VALUES('https://accounts.google.com',?,?,'student','Имя','Фамилия')", (subject,subject+'@student.karazin.ua'))
+            email=subject+'@student.karazin.ua'
+            db.execute("INSERT INTO users(issuer,subject,email,role,first_name,last_name) VALUES('student_email',?,?, 'student','Имя','Фамилия')", (email,email))
         db.execute('UPDATE tests SET is_open=1,keys_approved=1')
         ids = [r[0] for r in db.execute("SELECT id FROM users WHERE role='student'")]
     return app, ids
@@ -44,9 +45,9 @@ def test_answer_before_deadline_idempotent(seeded):
     from app.attempts import start_attempt, submit_answer
     with app.app_context():
         state = start_attempt(ids[0],1,100)
-        result = submit_answer(ids[0],state['id'],0,1,119)
+        result = submit_answer(ids[0],state['id'],0,{'choice':1},119)
         assert result['question_index'] == 1 and result['deadline'] == 139
-        repeat = submit_answer(ids[0],state['id'],0,1,120)
+        repeat = submit_answer(ids[0],state['id'],0,{'choice':1},120)
         assert repeat['question_index'] == 1 and repeat['deadline'] == 139
 
 
@@ -57,7 +58,7 @@ def test_late_answer_is_skip_and_foreign_rejected(seeded):
     from app.db import get_db
     with app.app_context():
         state = start_attempt(ids[0],1,100)
-        result = submit_answer(ids[0],state['id'],0,1,120)
+        result = submit_answer(ids[0],state['id'],0,{'choice':1},120)
         assert result['question_index'] == 1
         assert get_db().execute('SELECT choice FROM answers').fetchone()[0] is None
         with pytest.raises(NotFound):
@@ -85,4 +86,4 @@ def test_closed_test_keeps_current_attempt(seeded):
         get_db().execute('UPDATE tests SET is_open=0')
         with pytest.raises(Conflict):
             start_attempt(ids[1],1,101)
-        assert submit_answer(ids[0],state['id'],0,1,101)['question_index'] == 1
+        assert submit_answer(ids[0],state['id'],0,{'choice':1},101)['question_index'] == 1

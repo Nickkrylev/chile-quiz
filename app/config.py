@@ -15,5 +15,5 @@ def settings():
         SESSION_COOKIE_SECURE=os.getenv('COOKIE_SECURE', '1') == '1',
         LOCAL_TEACHER_LOGIN_ENABLED=os.getenv('LOCAL_TEACHER_LOGIN_ENABLED', '0') == '1',
         TRUST_PROXY=os.getenv('TRUST_PROXY', '0') == '1',
-        MAX_CONTENT_LENGTH=16384,
+        MAX_CONTENT_LENGTH=524288,
     )

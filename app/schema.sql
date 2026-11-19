@@ -11,17 +11,20 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS login_limits (ip TEXT PRIMARY KEY, failures INTEGER NOT NULL, window_start REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS tests (
  id INTEGER PRIMARY KEY, title TEXT NOT NULL, questions TEXT NOT NULL,
- is_open INTEGER NOT NULL DEFAULT 0, keys_approved INTEGER NOT NULL DEFAULT 0, version INTEGER NOT NULL DEFAULT 1
+ is_open INTEGER NOT NULL DEFAULT 0, keys_approved INTEGER NOT NULL DEFAULT 0, version INTEGER NOT NULL DEFAULT 1,
+ public_code TEXT, description TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'closed',
+ seconds_per_question INTEGER, show_answers INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS attempts (
  id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), test_id INTEGER NOT NULL REFERENCES tests(id),
  first_name TEXT NOT NULL, last_name TEXT NOT NULL, questions TEXT NOT NULL, version INTEGER NOT NULL,
  started REAL NOT NULL, deadline REAL NOT NULL, question_index INTEGER NOT NULL DEFAULT 0,
+ participant_email TEXT, seconds_per_question INTEGER NOT NULL DEFAULT 20,
  finished REAL, UNIQUE(user_id,test_id)
 );
 CREATE TABLE IF NOT EXISTS answers (
  attempt_id INTEGER NOT NULL REFERENCES attempts(id), question_index INTEGER NOT NULL,
- choice INTEGER, correct INTEGER NOT NULL, answered REAL NOT NULL,
+ choice INTEGER, selection TEXT, text_response TEXT, correct INTEGER NOT NULL, answered REAL NOT NULL,
  PRIMARY KEY(attempt_id,question_index)
 );
 CREATE TABLE IF NOT EXISTS audit_events (

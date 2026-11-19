@@ -1,4 +1,5 @@
 import secrets
+import re
 from functools import wraps
 from flask import Blueprint, current_app, g, request, session, abort
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -65,6 +66,27 @@ def payload():
     return data
 
 
+def normalize_student_email(value):
+    if not isinstance(value,str):
+        return None
+    email = value.strip().casefold()
+    if not email or len(email)>254 or any(c.isspace() for c in email):
+        return None
+    local, separator, domain = email.rpartition('@')
+    if (not separator or not local or len(local)>64 or not domain or len(domain)>253 or
+            local.startswith('.') or local.endswith('.') or '..' in local or
+            not re.fullmatch(r"[^<>(),;:\\\"\[\]@]+",local)):
+        return None
+    try:
+        ascii_domain = domain.encode('idna').decode('ascii')
+    except UnicodeError:
+        return None
+    labels = ascii_domain.split('.')
+    if any(not label or len(label)>63 or not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?',label) for label in labels):
+        return None
+    return local+'@'+ascii_domain.lower()
+
+
 @bp.get('/api/session')
 def session_info():
     if 'csrf' not in session:
@@ -76,14 +98,10 @@ def session_info():
 @bp.post('/api/auth/student')
 def student_login():
     data = payload()
-    email = data.get('email', '')
+    email = normalize_student_email(data.get('email',''))
     first_name, last_name = data.get('first_name', ''), data.get('last_name', '')
-    if not isinstance(email, str) or len(email) > 254 or not email.strip():
-        abort(400, 'Введіть студентську пошту.')
-    email = email.strip().casefold()
-    local_part, separator, domain = email.rpartition('@')
-    if not separator or not local_part or domain != current_app.config['STUDENT_DOMAIN'] or any(c.isspace() for c in email):
-        abort(400, f"Використовуйте адресу @{current_app.config['STUDENT_DOMAIN']}.")
+    if not email:
+        abort(400, 'Введіть коректну адресу електронної пошти.')
     for value in (first_name, last_name):
         if not isinstance(value, str) or not 1 <= len(value.strip()) <= 80 or any(ord(c) < 32 for c in value):
             abort(400, "Укажіть ім’я та прізвище, до 80 символів у кожному полі.")
@@ -91,9 +109,20 @@ def student_login():
     with transaction() as db:
         if db.execute("SELECT 1 FROM users WHERE email=? AND role='teacher'",(email,)).fetchone():
             abort(409, 'Ця адреса закріплена за обліковим записом викладача.')
-        previous = db.execute("SELECT a.user_id FROM attempts a JOIN users u ON u.id=a.user_id WHERE lower(u.email)=? AND a.test_id=1 ORDER BY CASE WHEN a.finished IS NOT NULL THEN 0 ELSE 1 END, a.started DESC LIMIT 1",(email,)).fetchone()
+        public_code = data.get('public_code')
+        if public_code is None:
+            test = db.execute('SELECT id,status FROM tests WHERE id=1').fetchone()
+        else:
+            if not isinstance(public_code,str):
+                abort(404,'Тест не знайдено.')
+            test = db.execute('SELECT id,status FROM tests WHERE public_code=?',(public_code,)).fetchone()
+        if not test or test['status']=='draft':
+            abort(404,'Тест не знайдено.')
+        # Always establish a supported email identity. Historical attempts may
+        # belong to a retired identity provider; attempt ownership can resume
+        # by the normalized participant email.
         existing = db.execute("SELECT id FROM users WHERE issuer='student_email' AND subject=?",(email,)).fetchone()
-        uid = previous['user_id'] if previous else (existing['id'] if existing else None)
+        uid = existing['id'] if existing else None
         if uid:
             db.execute('UPDATE users SET first_name=?,last_name=? WHERE id=?',(first_name,last_name,uid))
         else:

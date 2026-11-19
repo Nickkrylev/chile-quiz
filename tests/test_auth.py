@@ -69,3 +69,39 @@ def test_inflight_old_password_cannot_create_session(app,client,monkeypatch):
 def test_existing_responses_do_not_overwrite_rotated_cookie(teacher):
     response=teacher.get('/api/session')
     assert 'Set-Cookie' not in response.headers
+
+
+def test_student_email_login_accepts_any_valid_domain(app, client):
+    response = post(client, '/api/auth/student', {
+        'email': ' Student+test@proton.me ',
+        'first_name': 'Ім’я',
+        'last_name': 'Прізвище',
+    })
+    assert response.status_code == 200
+    user = client.get('/api/session').json['user']
+    assert user['email'] == 'student+test@proton.me'
+    assert user['role'] == 'student'
+    with app.app_context():
+        from app.db import get_db
+        assert get_db().execute("SELECT COUNT(*) FROM users WHERE email='student+test@proton.me'").fetchone()[0] == 1
+
+
+def test_student_email_login_normalizes_and_reuses_external_address(app, client):
+    from app.db import get_db
+    first = post(client, '/api/auth/student', {
+        'email': ' Learner+one@Example.org ',
+        'first_name': 'Ім’я',
+        'last_name': 'Прізвище',
+    })
+    assert first.status_code == 200
+    original_id = client.get('/api/session').json['user']['id']
+    second = post(client, '/api/auth/student', {
+        'email': 'learner+one@example.org',
+        'first_name': 'Нове ім’я',
+        'last_name': 'Нове прізвище',
+    })
+    assert second.status_code == 200
+    assert client.get('/api/session').json['user']['id'] == original_id
+    with app.app_context():
+        users = get_db().execute("SELECT COUNT(*) FROM users WHERE issuer='student_email'").fetchone()[0]
+        assert users == 1

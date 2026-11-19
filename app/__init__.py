@@ -44,6 +44,14 @@ def create_app(config=None):
     def index():
         return render_template('index.html')
 
+    @app.get('/t/<public_code>')
+    def public_test(public_code):
+        row = get_db().execute('SELECT status FROM tests WHERE public_code=?', (public_code,)).fetchone()
+        if not row or row['status'] == 'draft':
+            from flask import abort
+            abort(404, 'Тест не знайдено.')
+        return render_template('index.html', public_code=public_code)
+
     if app.config.get('TRUST_PROXY', False):
         from werkzeug.middleware.proxy_fix import ProxyFix
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
