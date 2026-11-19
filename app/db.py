@@ -109,7 +109,7 @@ def init_db():
             (id,title,questions,is_open,keys_approved,version,public_code,description,status,seconds_per_question,show_answers)
             VALUES(2,?,?,?,1,1,?,?,?,?,0)''',
             (data['title'], json.dumps(data['questions'], ensure_ascii=False), is_open,
-             public_code, data.get('description',''), status, data.get('seconds_per_question',50)))
+             public_code, data.get('description',''), status, data.get('seconds_per_question',40)))
 
     # Snapshot the participant address; casefolding makes later resume checks stable.
     # Historical duplicate addresses remain attached to their original attempt rows;

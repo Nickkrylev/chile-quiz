@@ -1,10 +1,10 @@
 {
   "title": "Іспанська мова · УО-4",
   "source": "TEST UO'4.docx",
-  "description": "20 запитань. На кожне запитання дається 50 секунд.",
+  "description": "20 запитань. На кожне запитання дається 40 секунд.",
   "public_code": "uo4-2026",
   "status": "open",
-  "seconds_per_question": 50,
+  "seconds_per_question": 40,
   "questions": [
     {
       "id": 1,
