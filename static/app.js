@@ -6,6 +6,7 @@ const scriptUrl = new URL(document.querySelector('script[src*="app.js"]').src);
 const basePath = scriptUrl.pathname.replace(/\/static\/app\.js$/, '').replace(/\/$/, '');
 const apiUrl = path => `${basePath}/${String(path).replace(/^\/+/, '')}`;
 const publicCode = main.dataset.publicCode || (location.pathname.match(/\/t\/([^/]+)$/)?.[1] ?? '');
+const browserAttemptKey = publicCode ? `gsse:test-attempt:${publicCode}` : null;
 let sessionInfo, testInfo, state, ticker, syncing=false, preview=null, selected=null, filterPage=1;
 let editorModel=null, editorWasOpen=false, resultTestId=null, clockAt=0, remainingAt=0, screen='', toastTimer, viewEpoch=0;
 const date = value => value==null ? '—' : new Date(value*1000).toLocaleString('uk-UA',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
@@ -27,6 +28,27 @@ async function api(path,data,method='POST') {
 function toast(message){$('#toast').textContent=message;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),5500);}
 function show(html,name){clearInterval(ticker);viewEpoch++;screen=name;main.innerHTML=html;window.scrollTo(0,0);}
 function errorBox(target,message){if(target){target.textContent=message;target.classList.remove('hidden');}}
+async function browserEmailFingerprint(email){
+  if(!browserAttemptKey||!window.crypto?.subtle||typeof TextEncoder==='undefined')return null;
+  const value=String(email||'').trim().toLowerCase();
+  if(!value)return null;
+  const digest=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));
+  return [...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+function savedBrowserAttempt(){
+  try{return browserAttemptKey?localStorage.getItem(browserAttemptKey):null;}catch{return null;}
+}
+async function browserAttemptBelongsToAnotherEmail(email){
+  const saved=savedBrowserAttempt();
+  if(!saved)return false;
+  const fingerprint=await browserEmailFingerprint(email);
+  return fingerprint!==null&&fingerprint!==saved;
+}
+async function rememberBrowserAttempt(email){
+  const fingerprint=await browserEmailFingerprint(email);
+  if(!fingerprint)return;
+  try{localStorage.setItem(browserAttemptKey,fingerprint);}catch{}
+}
 function closeSiteMenu(){
   const toggle=$('#menu-toggle'),menu=$('#site-menu');
   if(!toggle||!menu)return;
@@ -68,7 +90,7 @@ async function boot(){
     testInfo=publicCode?await api(`api/tests/${encodeURIComponent(publicCode)}`):await api('api/test');
     if(!sessionInfo.user)return login();
     const current=publicCode?await api(`api/tests/${encodeURIComponent(publicCode)}/attempts/current`):await api('api/attempts/current');
-    if(current.attempt)renderAttempt(current.attempt);else rules();
+    if(current.attempt){await rememberBrowserAttempt(sessionInfo.user.email);renderAttempt(current.attempt);}else rules();
   }catch(error){
     show(`<div class="panel content-narrow"><h1>Не вдалося завантажити платформу</h1><p class="muted">${esc(error.message)}</p><button class="button" id="retry">Повторити</button></div>`,'error');
     $('#retry').onclick=boot;
@@ -90,10 +112,12 @@ function login(){
   $('#student-login-form').onsubmit=async event=>{
     event.preventDefault();const button=$('button[type=submit]',event.currentTarget);button.disabled=true;
     try{
-      await api('api/auth/student',{email:$('#student-email').value,first_name:$('#first-name').value,last_name:$('#last-name').value,...(publicCode?{public_code:publicCode}:{})});
+      const email=$('#student-email').value.trim();
+      if(await browserAttemptBelongsToAnotherEmail(email))throw new Error('У цьому браузері вже почали цей тест з іншою адресою. Продовжити можна з тією самою адресою.');
+      await api('api/auth/student',{email,first_name:$('#first-name').value,last_name:$('#last-name').value,...(publicCode?{public_code:publicCode}:{})});
       sessionInfo=await api('api/session');account();
       const current=publicCode?await api(`api/tests/${encodeURIComponent(publicCode)}/attempts/current`):await api('api/attempts/current');
-      if(current.attempt)renderAttempt(current.attempt);else rules();
+      if(current.attempt){await rememberBrowserAttempt(email);renderAttempt(current.attempt);}else rules();
     }catch(error){errorBox($('#student-login-error'),error.message);button.disabled=false;}
   };
   $('#login-form')?.addEventListener('submit',async event=>{event.preventDefault();const button=$('button',event.currentTarget);button.disabled=true;try{await api('api/auth/local',{email:$('#teacher-email').value,password:$('#password').value});await boot();}catch(error){errorBox($('#login-error'),error.message);button.disabled=false;}});
@@ -113,7 +137,13 @@ function rules(){
     <p class="notice error hidden" id="start-error" role="alert"></p><button class="button full" id="start-test" ${open?'':'disabled'}>Розпочати тест <span aria-hidden="true">→</span></button></section>`,'rules');
   $('#start-test').onclick=async event=>{
     const button=event.currentTarget;button.disabled=true;
-    try{const route=publicCode?`api/tests/${encodeURIComponent(publicCode)}/attempts`:'api/attempts';renderAttempt(await api(route,{first_name:user.first_name,last_name:user.last_name}));}
+    try{
+      if(await browserAttemptBelongsToAnotherEmail(user.email))throw new Error('У цьому браузері вже почали цей тест з іншою адресою. Продовжити можна з тією самою адресою.');
+      const route=publicCode?`api/tests/${encodeURIComponent(publicCode)}/attempts`:'api/attempts';
+      const attempt=await api(route,{first_name:user.first_name,last_name:user.last_name});
+      await rememberBrowserAttempt(user.email);
+      renderAttempt(attempt);
+    }
     catch(error){errorBox($('#start-error'),error.message);button.disabled=false;}
   };
 }

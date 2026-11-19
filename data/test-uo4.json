@@ -1,0 +1,200 @@
+{
+  "title": "Іспанська мова · УО-4",
+  "source": "TEST UO'4.docx",
+  "description": "20 запитань. На кожне запитання дається 50 секунд.",
+  "public_code": "uo4-2026",
+  "status": "open",
+  "seconds_per_question": 50,
+  "questions": [
+    {
+      "id": 1,
+      "type": "single_choice",
+      "prompt": "Completa para expresar una suposición sobre el presente.",
+      "text": "No sé qué hora es; _____ las nueve.",
+      "choices": ["serían", "serán", "fueron", "habían sido"],
+      "correct": [1]
+    },
+    {
+      "id": 2,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "Para cuando empiece la entrevista, nosotros ya _____ todos los documentos.",
+      "choices": ["preparamos", "habíamos preparado", "prepararíamos", "habremos preparado"],
+      "correct": [3]
+    },
+    {
+      "id": 3,
+      "type": "single_choice",
+      "prompt": "Completa para expresar una suposición sobre un hecho pasado.",
+      "text": "Marta no está en su despacho. No lo sé con seguridad, pero ya _____ a la reunión.",
+      "choices": ["iba", "habría ido", "irá", "habrá ido"],
+      "correct": [3]
+    },
+    {
+      "id": 4,
+      "type": "single_choice",
+      "prompt": "Completa para expresar una suposición sobre el pasado.",
+      "text": "No sabía cuántos candidatos había en la sala; _____ unos veinte.",
+      "choices": ["serían", "serán", "fueron", "habrán sido"],
+      "correct": [0]
+    },
+    {
+      "id": 5,
+      "type": "single_choice",
+      "prompt": "Completa el relato en pasado.",
+      "text": "El lunes, Ana dijo: «Ahora estoy haciendo unas prácticas». Ana dijo que en aquel momento _____ unas prácticas.",
+      "choices": ["estoy haciendo", "estará haciendo", "estaba haciendo", "estuve haciendo"],
+      "correct": [2]
+    },
+    {
+      "id": 6,
+      "type": "single_choice",
+      "prompt": "Elige la transformación correcta.",
+      "text": "El lunes, el director dijo: «Mañana publicaremos la lista». El miércoles lo cuentas.",
+      "choices": [
+        "El director dijo que mañana publicaremos la lista.",
+        "El director dijo que al día siguiente publicarían la lista.",
+        "El director dijo que el día anterior publicarían la lista.",
+        "El director dijo que al día siguiente publicamos la lista."
+      ],
+      "correct": [1]
+    },
+    {
+      "id": 7,
+      "type": "single_choice",
+      "prompt": "Completa usando la concordancia de tiempos del relato en pasado.",
+      "text": "Sara contó: «Ya he enviado mi currículum». Sara contó que ya _____ su currículum.",
+      "choices": ["habrá enviado", "enviará", "habría enviado", "había enviado"],
+      "correct": [3]
+    },
+    {
+      "id": 8,
+      "type": "single_choice",
+      "prompt": "Elige la transformación correcta.",
+      "text": "El entrevistador preguntó a Julia: «¿Puedes empezar el lunes?».",
+      "choices": [
+        "El entrevistador preguntó a Julia si podía empezar el lunes.",
+        "El entrevistador preguntó a Julia que podía empezar el lunes.",
+        "El entrevistador preguntó a Julia si puedo empezar el lunes.",
+        "El entrevistador preguntó a Julia si puedes empezar el lunes."
+      ],
+      "correct": [0]
+    },
+    {
+      "id": 9,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "En una entrevista se _____ con claridad y se evita interrumpir.",
+      "choices": ["hablan", "habla", "hablamos", "habláis"],
+      "correct": [1]
+    },
+    {
+      "id": 10,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "Aunque terminó el curso, Pablo sigue _____ vocabulario profesional cada día.",
+      "choices": ["aprendiendo", "aprendido", "aprender", "aprende"],
+      "correct": [0]
+    },
+    {
+      "id": 11,
+      "type": "single_choice",
+      "prompt": "¿Qué oración usa el gerundio para indicar cómo se realiza una acción?",
+      "text": "",
+      "choices": [
+        "El candidato entregó la solicitud al día siguiente.",
+        "El candidato había entregado la solicitud antes de salir.",
+        "El candidato entregará la solicitud mañana.",
+        "El candidato entró en la sala sonriendo."
+      ],
+      "correct": [3]
+    },
+    {
+      "id": 12,
+      "type": "single_choice",
+      "prompt": "Quieres pedir información de forma cortés. ¿Qué dices?",
+      "text": "",
+      "choices": [
+        "¿Pudiste explicarme las condiciones del puesto ayer, por favor?",
+        "¿Podías explicarme las condiciones del puesto cuando trabajabas aquí?",
+        "¿Puedes explicar las condiciones que ya explicaste?",
+        "¿Podría explicarme las condiciones del puesto, por favor?"
+      ],
+      "correct": [3]
+    },
+    {
+      "id": 13,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "Me _____ trabajar en una empresa internacional.",
+      "choices": ["gustaría", "gustarían", "gustar", "gustando"],
+      "correct": [0]
+    },
+    {
+      "id": 14,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "En tu lugar, yo _____ la experiencia laboral al principio del currículum.",
+      "choices": ["pongo", "pondría", "pondré", "puse"],
+      "correct": [1]
+    },
+    {
+      "id": 15,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "La entrevistadora pregunta a Carlos: «¿Tienes experiencia?». La entrevistadora pregunta a Carlos _____ experiencia.",
+      "choices": ["que tienes", "si tienes", "que tiene", "si tiene"],
+      "correct": [3]
+    },
+    {
+      "id": 16,
+      "type": "single_choice",
+      "prompt": "¿Qué oración contiene una construcción impersonal con se?",
+      "text": "",
+      "choices": [
+        "Se vive bien en esta ciudad universitaria.",
+        "Ana se prepara para la entrevista.",
+        "Los estudiantes se saludan al llegar.",
+        "Pedro se levanta a las siete."
+      ],
+      "correct": [0]
+    },
+    {
+      "id": 17,
+      "type": "single_choice",
+      "prompt": "Transforma a la voz pasiva.",
+      "text": "El comité revisará las solicitudes mañana.",
+      "choices": [
+        "Las solicitudes serán revisadas mañana por el comité.",
+        "Las solicitudes fueron revisadas mañana por el comité.",
+        "Las solicitudes será revisada mañana por el comité.",
+        "El comité será revisado mañana por las solicitudes."
+      ],
+      "correct": [0]
+    },
+    {
+      "id": 18,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "Las candidatas han sido _____ por el departamento de recursos humanos.",
+      "choices": ["seleccionado", "seleccionadas", "seleccionada", "seleccionados"],
+      "correct": [1]
+    },
+    {
+      "id": 19,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "Los alumnos aprenden vocabulario profesional _____ entrevistas de trabajo en parejas.",
+      "choices": ["practicado", "practicando", "practican", "practicar"],
+      "correct": [1]
+    },
+    {
+      "id": 20,
+      "type": "single_choice",
+      "prompt": "Completa.",
+      "text": "En el momento de la llamada, yo estaba _____ las instrucciones de la oferta.",
+      "choices": ["leído", "leyendo", "leer", "leo"],
+      "correct": [1]
+    }
+  ]
+}

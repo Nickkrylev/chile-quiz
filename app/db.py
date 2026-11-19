@@ -94,6 +94,23 @@ def init_db():
         if updates:
             db.execute('UPDATE tests SET '+','.join(f'{name}=?' for name in updates)+' WHERE id=1', tuple(updates.values()))
 
+    # Keep the source test out of isolated test databases. Production and local
+    # development databases receive the UO-4 test once; later init-db runs never
+    # overwrite its questions or participant results.
+    source = ROOT / 'data/test-uo4.json'
+    if source.exists() and not current_app.config.get('TESTING'):
+        data = json.loads(source.read_text())
+        public_code = data.get('public_code') or secrets.token_urlsafe(12)
+        while db.execute('SELECT 1 FROM tests WHERE public_code=? AND id<>2', (public_code,)).fetchone():
+            public_code = secrets.token_urlsafe(12)
+        status = data.get('status', 'closed')
+        is_open = int(status == 'open')
+        db.execute('''INSERT OR IGNORE INTO tests
+            (id,title,questions,is_open,keys_approved,version,public_code,description,status,seconds_per_question,show_answers)
+            VALUES(2,?,?,?,1,1,?,?,?,?,0)''',
+            (data['title'], json.dumps(data['questions'], ensure_ascii=False), is_open,
+             public_code, data.get('description',''), status, data.get('seconds_per_question',50)))
+
     # Snapshot the participant address; casefolding makes later resume checks stable.
     # Historical duplicate addresses remain attached to their original attempt rows;
     # request handling resolves those to the latest matching attempt without merging data.
